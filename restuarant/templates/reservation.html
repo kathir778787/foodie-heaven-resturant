@@ -1,0 +1,264 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reservation - Foodie Heaven Restaurant</title>
+    <link rel="icon" type="image/png" href="{% static 'restlogo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+        }
+    
+        
+        .nav-fixed {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .reservation-success {
+            display: none;
+        }
+         /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563EB, #DB2777);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="text-4xl font-bold text-crimson-">
+                    <i class="fas fa-utensils text-pink-500 mr-2"></i>
+                    FOODIE HEAVEN RESTAURANT
+                </div>
+                <!-- menu -->
+                <div class="hidden md:flex space-x-8">
+                   <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">Home</a>
+                    <a href="{% url 'login' %}" class="text-pink-700 hover:text-blue-500 transition">sign in</a>
+                    <a href="{% url 'about' %}" class="text-pink-700 hover:text-blue-500 transition">About</a>
+                    <a href="{% url 'ourdishes' %}" class="text-pink-700 hover:text-blue-500 transition">Special Menu</a>
+                    <a href="{% url 'reservation' %}" class="text-pink-700 hover:text-blue-500 transition">Reservation</a>
+                    <a href="{% url 'dishes' %}" class="text-pink-700 hover:text-blue-500 transition">Dishes</a>
+                    <a href="{% url 'contact' %}" class="text-pink-700 text-dark hover:text-blue-500 transition">Contact</a>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <div class="px-4 py-2 space-y-2">
+                   <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">Home</a>
+                    <a href="{% url 'login' %}" class="text-pink-700 hover:text-blue-500 transition">sign in</a>
+                    <a href="{% url 'about' %}" class="text-pink-700 hover:text-blue-500 transition">About</a>
+                    <a href="{% url 'ourdishes' %}" class="text-pink-700 hover:text-blue-500 transition">Special Menu</a>
+                    <a href="{% url 'reservation' %}" class="text-pink-700 hover:text-blue-500 transition">Reservation</a>
+                    <a href="{% url 'dishes' %}" class="text-pink-700 hover:text-blue-500 transition">Dishes</a>
+                    <a href="{% url 'contact' %}" class="text-pink-700 text-dark hover:text-blue-500 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Reservation Section -->
+    <section class="py-20 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="max-w-4xl mx-auto">
+                <div class="text-center mb-12 fade-in">
+                    <h2 class="text-4xl font-bold mb-4">Make a Reservation</h2>
+                    <p class="text-gray-600">Book your table online and enjoy a memorable dining experience</p>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-lg p-8 fade-in">
+                    <form id="reservation-form" class="grid md:grid-cols-2 gap-6">
+                        <div>
+                            <label class="block text-gray-700 mb-2">Full Name</label>
+                            <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="John Doe">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Email</label>
+                            <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="john@example.com">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Phone Number</label>
+                            <input type="tel" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" placeholder="+91 1234567890">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Number of Guests</label>
+                            <select required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="">Select guests</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5 Guests</option>
+                                <option value="6">6+ Guests</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Date</label>
+                            <input type="date" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                        </div>
+                        <div>
+                            <label class="block text-gray-700 mb-2">Time</label>
+                            <select required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                                <option value="">Select time</option>
+                                <option value="17:00">5:00 PM</option>
+                                <option value="17:30">5:30 PM</option>
+                                <option value="18:00">6:00 PM</option>
+                                <option value="18:30">6:30 PM</option>
+                                <option value="19:00">7:00 PM</option>
+                                <option value="19:30">7:30 PM</option>
+                                <option value="20:00">8:00 PM</option>
+                                <option value="20:30">8:30 PM</option>
+                                <option value="21:00">9:00 PM</option>
+                                <option value="22:00">10:00 PM</option>
+                                <option value="23:00">11:00 PM</option>
+                            </select>
+                        </div>
+                        <div class="md:col-span-2">
+                            <label class="block text-gray-700 mb-2">Special Requests (Optional)</label>
+                            <textarea class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" rows="3" placeholder="Any dietary restrictions or special occasions?"></textarea>
+                        </div>
+                        <div class="md:col-span-2 text-center">
+                            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-8 py-3 rounded-full transition transform hover:scale-105">
+                                Reserve Table
+                            </button>
+                        </div>
+                    </form>
+                    <div class="reservation-success mt-6 text-center text-green-600">
+                        <i class="fas fa-check-circle text-4xl mb-2"></i>
+                        <p class="text-lg font-semibold">Reservation Confirmed!</p>
+                        <p>We'll send a confirmation email shortly.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="text-2xl font-bold mb-2">
+                        <i class="fas fa-utensils text-blue-500 mr-2"></i>
+                        FOODIE HEAVEN
+                    </div>
+                    <p class="text-gray-400">© 2025 Foodie Heaven. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="{% url 'policy' %}" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
+                    <a href="{% url 'terms' %}" class="text-gray-400 hover:text-white transition">Terms of Service</a>
+                    <a href="{% url 'contact' %}" class="text-gray-400 hover:text-white transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-fixed', 'shadow-md');
+            } else {
+                navbar.classList.remove('nav-fixed', 'shadow-md');
+            }
+        });
+
+        // Reservation form
+        const reservationForm = document.getElementById('reservation-form');
+        const reservationSuccess = document.querySelector('.reservation-success');
+
+        reservationForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate form submission
+            reservationForm.style.display = 'none';
+            reservationSuccess.style.display = 'block';
+            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                reservationForm.style.display = 'grid';
+                reservationSuccess.style.display = 'none';
+                reservationForm.reset();
+            }, 3000);
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Set minimum date for reservation to today
+        const dateInput = document.querySelector('input[type="date"]');
+        const today = new Date().toISOString().split('T')[0];
+        dateInput.setAttribute('min', today);
+    </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Foodie Heaven Restaurant</title>
+    <link rel="icon" type="image/png" href="{% static 'restlogo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+         /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563EB, #DB2777);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 bg-white shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="text-4xl font-bold text-crimson-">
+                    <i class="fas fa-utensils text-pink-500 mr-2"></i>
+                    FOODIE HEAVEN ADMIN
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">View Website</a>
+                    <button id="logout-btn" class="text-pink-700 hover:text-blue-500 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Dashboard Section -->
+    <section class="py-20 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-12">
+                <h2 class="text-4xl font-bold mb-4">Admin Dashboard</h2>
+                <p class="text-gray-600">Manage your restaurant content</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <i class="fas fa-utensils text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Manage Dishes</h3>
+                    <p class="text-gray-600 mb-4">Add, edit or remove dishes from your menu</p>
+                    <a href="{% url 'admin_dishes' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+                        Manage
+                    </a>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <i class="fas fa-calendar-check text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Reservations</h3>
+                    <p class="text-gray-600 mb-4">View and manage customer reservations</p>
+                    <a href="{% url 'admin_reservation' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+                        Manage
+                    </a>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow-md p-6 text-center">
+                    <i class="fas fa-phone text-4xl text-blue-500 mb-4"></i>
+                    <h3 class="text-xl font-semibold mb-2">Contact Info</h3>
+                    <p class="text-gray-600 mb-4">Update restaurant contact information</p>
+                    <a href="{% url 'admin_contact' %}" class="inline-block bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+                        Manage
+                    </a>
+                </div>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <h3 class="text-2xl font-semibold mb-4">Recent Reservations</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 text-left">Name</th>
+                                <th class="px-4 py-2 text-left">Date</th>
+                                <th class="px-4 py-2 text-left">Time</th>
+                                <th class="px-4 py-2 text-left">Guests</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">John Doe</td>
+                                <td class="px-4 py-2">2025-07-15</td>
+                                <td class="px-4 py-2">7:00 PM</td>
+                                <td class="px-4 py-2">4</td>
+                                <td class="px-4 py-2"><span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Confirmed</span></td>
+                                <td class="px-4 py-2">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr class="border-b">
+                                <td class="px-4 py-2">Jane Smith</td>
+                                <td class="px-4 py-2">2025-07-16</td>
+                                <td class="px-4 py-2">8:30 PM</td>
+                                <td class="px-4 py-2">2</td>
+                                <td class="px-4 py-2"><span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded">Pending</span></td>
+                                <td class="px-4 py-2">
+                                    <button class="text-blue-500 hover:text-blue-700 mr-2">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Check if admin is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            
+            if (isLoggedIn !== 'true') {
+                // Redirect to login page if not logged in
+                window.location.href = 'admin_login.html';
+            }
+        });
+        
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('isAdminLoggedIn');
+            window.location.href = 'admin_login.html';
+        });
+    </script>
+</body>
+</html>

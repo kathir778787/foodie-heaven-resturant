@@ -1,0 +1,261 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Us - Foodie Heaven Restaurant</title>
+    <link rel="icon" type="image/png" href="{% static 'restlogo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{% static 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css' %}">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 30px;
+        }
+    
+        
+        .nav-fixed {
+            backdrop-filter: blur(10px);
+            background-color: rgba(255, 255, 255, 0.95);
+        }
+        
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+         /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563EB, #DB2777);
+        }
+        #contact-success {
+            display: none;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="text-4xl font-bold text-crimson-">
+                    <i class="fas fa-utensils text-pink-500 mr-2"></i>
+                    FOODIE HEAVEN RESTAURANT
+                </div>
+                <!-- menu -->
+                <div class="hidden md:flex space-x-8">
+                    <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">Home</a>
+                    <a href="{% url 'login' %}" class="text-pink-700 hover:text-blue-500 transition">sign in</a>
+                    <a href="{% url 'about' %}" class="text-pink-700 hover:text-blue-500 transition">About</a>
+                    <a href="{% url 'ourdishes' %}" class="text-pink-700 hover:text-blue-500 transition">Special Menu</a>
+                    <a href="{% url 'reservation' %}" class="text-pink-700 hover:text-blue-500 transition">Reservation</a>
+                    <a href="{% url 'dishes' %}" class="text-pink-700 hover:text-blue-500 transition">Dishes</a>
+                    <a href="{% url 'contact' %}" class="text-pink-700 text-dark hover:text-blue-500 transition">Contact</a>  
+                </div>
+                <button id="mobile-menu-btn" class="md:hidden text-gray-700">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white shadow-lg">
+            <div class="px-4 py-2 space-y-2">
+                  <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">Home</a>
+                    <a href="{% url 'login' %}" class="text-pink-700 hover:text-blue-500 transition">sign in</a>
+                    <a href="{% url 'about' %}" class="text-pink-700 hover:text-blue-500 transition">About</a>
+                    <a href="{% url 'ourdishes' %}" class="text-pink-700 hover:text-blue-500 transition">Special Menu</a>
+                    <a href="{% url 'reservation' %}" class="text-pink-700 hover:text-blue-500 transition">Reservation</a>
+                    <a href="{% url 'dishes' %}" class="text-pink-700 hover:text-blue-500 transition">Dishes</a>
+                    <a href="{% url 'contact' %}" class="text-pink-700 text-dark hover:text-blue-500 transition">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contact Section -->
+    <section class="py-20 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid md:grid-cols-2 gap-12">
+                <div class="fade-in">
+                    <h2 class="text-4xl font-bold mb-6">Contact Us</h2>
+                    <p class="text-gray-600 mb-6">
+                        We'd love to hear from you! Whether you have questions about our menu, want to make a reservation, 
+                        or need special arrangements, our team is here to help.
+                    </p>
+                    
+                    <div class="space-y-4">
+                        <div class="flex items-center">
+                            <i class="fas fa-map-marker-alt text-blue-500 text-xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold">Address</h4>
+                                <p class="text-gray-600">2/4, Dancy Nagar, Velacherry</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-phone text-blue-500 text-xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold">Phone</h4>
+                                <p class="text-gray-600">+91 7397527787</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-envelope text-blue-500 text-xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold">Email</h4>
+                                <p class="text-gray-600">foodieheaven@gmail.com</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center">
+                            <i class="fas fa-clock text-blue-500 text-xl mr-4"></i>
+                            <div>
+                                <h4 class="font-semibold">Hours</h4>
+                                <p class="text-gray-600">Mon-Thu: 5PM - 10PM<br>Fri-Sat: 5PM - 11PM<br>Sun: 5PM - 11PM</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                
+                <div class="fade-in">
+                    <div class="bg-white rounded-lg shadow-lg p-6">
+                        <h3 class="text-2xl font-semibold mb-4">Send us a Message</h3>
+                        <form id="contact-form">
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Name</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Email</label>
+                                <input type="email" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Subject</label>
+                                <input type="text" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            </div>
+                            <div class="mb-4">
+                                <label class="block text-gray-700 mb-2">Message</label>
+                                <textarea required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" rows="4"></textarea>
+                            </div>
+                            <button type="submit" class="w-full bg-blue-500 hover:bg-blue-600 text-white py-2 rounded-lg transition">
+                                Send Message
+                            </button>
+                        </form>
+                        <div id="contact-success" class="mt-4 text-center text-green-600">
+                            <i class="fas fa-check-circle"></i>
+                            <p>Message sent successfully!</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <div class="text-2xl font-bold mb-2">
+                        <i class="fas fa-utensils text-blue-500 mr-2"></i>
+                        FOODIE HEAVEN
+                    </div>
+                    <p class="text-gray-400">© 2025 Foodie Heaven. All rights reserved.</p>
+                </div>
+                <div class="flex space-x-6">
+                    <a href="{% url 'policy' %}" class="text-gray-400 hover:text-white transition">Privacy Policy</a>
+                    <a href="{% url 'terms' %}" class="text-gray-400 hover:text-white transition">Terms of Service</a>
+                    <a href="{% url 'contact' %}" class="text-gray-400 hover:text-white transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+        const mobileMenu = document.getElementById('mobile-menu');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            mobileMenu.classList.toggle('hidden');
+        });
+
+        // Close mobile menu when clicking on a link
+        const mobileLinks = mobileMenu.querySelectorAll('a');
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.add('hidden');
+            });
+        });
+
+        // Navbar scroll effect
+        window.addEventListener('scroll', () => {
+            const navbar = document.getElementById('navbar');
+            if (window.scrollY > 50) {
+                navbar.classList.add('nav-fixed', 'shadow-md');
+            } else {
+                navbar.classList.remove('nav-fixed', 'shadow-md');
+            }
+        });
+
+        // Contact form
+        const contactForm = document.getElementById('contact-form');
+        const contactSuccess = document.getElementById('contact-success');
+
+        contactForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Simulate form submission
+            contactForm.style.display = 'none';
+            contactSuccess.style.display = 'block';
+            
+            // Reset form after 3 seconds
+            setTimeout(() => {
+                contactForm.style.display = 'block';
+                contactSuccess.style.display = 'none';
+                contactForm.reset();
+            }, 3000);
+        });
+
+        // Fade in animation on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.fade-in').forEach(el => {
+            observer.observe(el);
+        });
+    </script>
+</body>
+</html>

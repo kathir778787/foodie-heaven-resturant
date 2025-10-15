@@ -1,0 +1,418 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Dishes - Foodie Heaven Restaurant</title>
+    <link rel="icon" type="image/png" href="{% static 'restlogo.png' %}">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Inter:wght@300;400;500;600&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Playfair Display', serif;
+        }
+         /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(135deg, #2563EB, #DB2777);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-300 py-4 bg-white shadow-md">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center">
+                <div class="text-4xl font-bold text-crimson-">
+                    <i class="fas fa-utensils text-pink-500 mr-2"></i>
+                    FOODIE HEAVEN ADMIN
+                </div>
+                <div class="hidden md:flex space-x-8">
+                    <a href="{% url 'admin_dashboard' %}" class="text-pink-700 hover:text-blue-500 transition">Dashboard</a>
+                    <a href="{% url 'index'%}" class="text-pink-700 hover:text-blue-500 transition">View Website</a>
+                    <button id="logout-btn" class="text-pink-700 hover:text-blue-500 transition">
+                        <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Manage Dishes Section -->
+    <section class="py-20 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-bold">Manage Dishes</h2>
+                <button id="add-dish-btn" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+                    <i class="fas fa-plus mr-2"></i>Add New Dish
+                </button>
+            </div>
+            
+            <!-- Category Tabs -->
+            <div class="flex mb-8 border-b">
+                <button class="category-tab px-4 py-2 font-medium text-blue-500 border-b-2 border-blue-500" data-category="sea">
+                    Sea Specials
+                </button>
+                <button class="category-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-category="veg">
+                    Veg Specials
+                </button>
+                <button class="category-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-category="chicken">
+                    Chicken Specials
+                </button>
+                <button class="category-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-category="nonveg">
+                    Non-Veg Specials
+                </button>
+                <button class="category-tab px-4 py-2 font-medium text-gray-600 hover:text-blue-500" data-category="drinks">
+                    Drink Specials
+                </button>
+            </div>
+            
+            <!-- Dishes Table -->
+            <div class="bg-white rounded-lg shadow-lg p-6">
+                <div class="overflow-x-auto">
+                    <table class="w-full table-auto">
+                        <thead>
+                            <tr class="bg-gray-100">
+                                <th class="px-4 py-2 text-left">Image</th>
+                                <th class="px-4 py-2 text-left">Name</th>
+                                <th class="px-4 py-2 text-left">Description</th>
+                                <th class="px-4 py-2 text-left">Price</th>
+                                <th class="px-4 py-2 text-left">Category</th>
+                                <th class="px-4 py-2 text-left">Status</th>
+                                <th class="px-4 py-2 text-left">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="dishes-table-body">
+                            <!-- Dishes will be loaded here dynamically -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Add/Edit Dish Modal -->
+    <div id="dish-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-2xl p-6 max-h-screen overflow-y-auto">
+            <div class="flex justify-between items-center mb-4">
+                <h3 id="modal-title" class="text-xl font-semibold">Add New Dish</h3>
+                <button id="close-modal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="dish-form">
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Dish Name</label>
+                        <input type="text" id="dish-name" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Price (₹)</label>
+                        <input type="number" id="dish-price" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Description</label>
+                    <textarea id="dish-description" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500" rows="3"></textarea>
+                </div>
+                
+                <div class="grid md:grid-cols-2 gap-4">
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Category</label>
+                        <select id="dish-category" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="sea">Sea Specials</option>
+                            <option value="veg">Veg Specials</option>
+                            <option value="chicken">Chicken Specials</option>
+                            <option value="nonveg">Non-Veg Specials</option>
+                            <option value="drinks">Drink Specials</option>
+                        </select>
+                    </div>
+                    <div class="mb-4">
+                        <label class="block text-gray-700 mb-2">Status</label>
+                        <select id="dish-status" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label class="block text-gray-700 mb-2">Image URL</label>
+                    <input type="text" id="dish-image" required class="w-full px-4 py-2 border rounded-lg focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div class="flex justify-end">
+                    <button type="button" id="cancel-btn" class="bg-gray-300 hover:bg-gray-400 text-gray-800 px-4 py-2 rounded mr-2 transition">
+                        Cancel
+                    </button>
+                    <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white px-4 py-2 rounded transition">
+                        Save Dish
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Sample dish data (in a real app, this would come from a database)
+        const dishesData = {
+            sea: [
+                { id: 1, name: "South Indian Prawn Curry", description: "Fresh prawns cooked in a spicy gravy with Tamil style", price: 150, image: "{% static 'prawn.jpg' %}", status: "available" },
+                { id: 2, name: "South Indian Fish Curry", description: "Fresh fish cooked in a spicy gravy with Tamil style", price: 120, image: "{% static 'fish.jpg' %}", status: "available" },
+                { id: 3, name: "South Indian Crab Curry", description: "Fresh crab cooked in a spicy gravy with Tamil style", price: 150, image: "{% static 'nandu.jpg' %}", status: "available" }
+            ],
+            veg: [
+                { id: 4, name: "Veg Fried Rice", description: "Fried and crispy full vegetarian fried rice", price: 175, image: "{% static 'vegfry.jpg' %}", status: "available" },
+                { id: 5, name: "Mushroom Fried Rice", description: "Clean and healthy mushroom fried rice spicy", price: 175, image: "{% static 'mushrice.jpg' %}", status: "available" },
+                { id: 6, name: "Schezwan Fried Rice", description: "Hot and spicy schezwan fried rice", price: 150, image: "{% static 'sches.jpg' %}", status: "available" }
+            ],
+            chicken: [
+                { id: 7, name: "Tandoori Chicken", description: "Spicy chicken tandoori with aromatic spices", price: 350, image: "{% static 'tandoori.jpg' %}", status: "available" },
+                { id: 8, name: "KFC Chicken", description: "Crispy fried chicken with special spices", price: 200, image: "{% static 'kfc.jpg' %}", status: "available" },
+                { id: 9, name: "Grilled Chicken", description: "Juicy grilled chicken with herbs and spices", price: 250, image: "{% static 'grilled.jpg' %}", status: "available" }
+            ],
+            nonveg: [
+                { id: 10, name: "Mutton Ghee Roasted", description: "Mutton with ghee roasted", price: 250, image: "{% static 'mutton ghee.jpg' %}", status: "available" },
+                { id: 11, name: "Mutton Gravy", description: "Mutton cooked in a rich gravy", price: 250, image: "{% static 'muttoncravy.jpg' %}", status: "available" },
+                { id: 12, name: "Chicken 65", description: "Fry crispy chicken 65 masala", price: 250, image: "{% static 'chicken65.jpg' %}", status: "available" }
+            ],
+            drinks: [
+                { id: 13, name: "Vanilla Strawberry Ice Tea", description: "Vanilla with strawberry", price: 180, image: "{% static 'vsicetea.jpg' %}", status: "available" },
+                { id: 14, name: "Falooda", description: "Falooda ice with sweet", price: 140, image: "{% static 'falooda.jpg' %}", status: "available" },
+                { id: 15, name: "All Favorite Fruit Juices", description: "Buy multiple flavors fruit juices", price: 100, image: "{% static 'fruitjuice.jpg' %}", status: "available" }
+            ]
+        };
+        
+        let currentCategory = 'sea';
+        let editingDishId = null;
+        
+        // Check if admin is logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('isAdminLoggedIn');
+            
+            if (isLoggedIn !== 'true') {
+                // Redirect to login page if not logged in
+                window.location.href = 'admin_login.html';
+            } else {
+                // Load dishes for the default category
+                loadDishes(currentCategory);
+            }
+        });
+        
+        // Logout functionality
+        document.getElementById('logout-btn').addEventListener('click', function() {
+            localStorage.removeItem('isAdminLoggedIn');
+            window.location.href = 'admin_login.html';
+        });
+        
+        // Category tabs
+        const categoryTabs = document.querySelectorAll('.category-tab');
+        categoryTabs.forEach(tab => {
+            tab.addEventListener('click', function() {
+                // Update active tab
+                categoryTabs.forEach(t => {
+                    t.classList.remove('text-blue-500', 'border-b-2', 'border-blue-500');
+                    t.classList.add('text-gray-600');
+                });
+                this.classList.remove('text-gray-600');
+                this.classList.add('text-blue-500', 'border-b-2', 'border-blue-500');
+                
+                // Load dishes for selected category
+                currentCategory = this.getAttribute('data-category');
+                loadDishes(currentCategory);
+            });
+        });
+        
+        // Load dishes for a category
+        function loadDishes(category) {
+            const dishes = dishesData[category] || [];
+            const tableBody = document.getElementById('dishes-table-body');
+            
+            tableBody.innerHTML = dishes.map(dish => `
+                <tr class="border-b">
+                    <td class="px-4 py-2">
+                        <img src="${dish.image}" alt="${dish.name}" class="w-16 h-16 object-cover rounded">
+                    </td>
+                    <td class="px-4 py-2 font-medium">${dish.name}</td>
+                    <td class="px-4 py-2">${dish.description}</td>
+                    <td class="px-4 py-2">₹${dish.price}</td>
+                    <td class="px-4 py-2">${getCategoryName(category)}</td>
+                    <td class="px-4 py-2">
+                        ${dish.status === 'available' 
+                            ? '<span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded">Available</span>'
+                            : '<span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded">Unavailable</span>'
+                        }
+                    </td>
+                    <td class="px-4 py-2">
+                        <button class="edit-dish text-blue-500 hover:text-blue-700 mr-2" data-id="${dish.id}">
+                            <i class="fas fa-edit"></i>
+                        </button>
+                        <button class="delete-dish text-red-500 hover:text-red-700" data-id="${dish.id}">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+            `).join('');
+            
+            // Add event listeners to edit and delete buttons
+            document.querySelectorAll('.edit-dish').forEach(button => {
+                button.addEventListener('click', function() {
+                    const dishId = parseInt(this.getAttribute('data-id'));
+                    editDish(dishId);
+                });
+            });
+            
+            document.querySelectorAll('.delete-dish').forEach(button => {
+                button.addEventListener('click', function() {
+                    const dishId = parseInt(this.getAttribute('data-id'));
+                    deleteDish(dishId);
+                });
+            });
+        }
+        
+        // Get category display name
+        function getCategoryName(category) {
+            const categoryNames = {
+                sea: 'Sea Specials',
+                veg: 'Veg Specials',
+                chicken: 'Chicken Specials',
+                nonveg: 'Non-Veg Specials',
+                drinks: 'Drink Specials'
+            };
+            return categoryNames[category] || category;
+        }
+        
+        // Add dish button
+        document.getElementById('add-dish-btn').addEventListener('click', function() {
+            editingDishId = null;
+            document.getElementById('modal-title').textContent = 'Add New Dish';
+            document.getElementById('dish-form').reset();
+            document.getElementById('dish-modal').classList.remove('hidden');
+        });
+        
+        // Close modal
+        document.getElementById('close-modal').addEventListener('click', function() {
+            document.getElementById('dish-modal').classList.add('hidden');
+        });
+        
+        document.getElementById('cancel-btn').addEventListener('click', function() {
+            document.getElementById('dish-modal').classList.add('hidden');
+        });
+        
+        // Edit dish
+        function editDish(dishId) {
+            // Find the dish in the data
+            let dish = null;
+            for (const category in dishesData) {
+                const found = dishesData[category].find(d => d.id === dishId);
+                if (found) {
+                    dish = found;
+                    break;
+                }
+            }
+            
+            if (dish) {
+                editingDishId = dishId;
+                document.getElementById('modal-title').textContent = 'Edit Dish';
+                document.getElementById('dish-name').value = dish.name;
+                document.getElementById('dish-price').value = dish.price;
+                document.getElementById('dish-description').value = dish.description;
+                document.getElementById('dish-category').value = getCategoryFromDish(dish);
+                document.getElementById('dish-status').value = dish.status;
+                document.getElementById('dish-image').value = dish.image;
+                document.getElementById('dish-modal').classList.remove('hidden');
+            }
+        }
+        
+        // Get category from dish
+        function getCategoryFromDish(dish) {
+            for (const category in dishesData) {
+                if (dishesData[category].find(d => d.id === dish.id)) {
+                    return category;
+                }
+            }
+            return 'sea';
+        }
+        
+        // Delete dish
+        function deleteDish(dishId) {
+            if (confirm('Are you sure you want to delete this dish?')) {
+                // Find and remove the dish from the data
+                for (const category in dishesData) {
+                    const index = dishesData[category].findIndex(d => d.id === dishId);
+                    if (index !== -1) {
+                        dishesData[category].splice(index, 1);
+                        break;
+                    }
+                }
+                
+                // Reload the dishes
+                loadDishes(currentCategory);
+            }
+        }
+        
+        // Save dish form
+        document.getElementById('dish-form').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const dishData = {
+                name: document.getElementById('dish-name').value,
+                price: parseInt(document.getElementById('dish-price').value),
+                description: document.getElementById('dish-description').value,
+                category: document.getElementById('dish-category').value,
+                status: document.getElementById('dish-status').value,
+                image: document.getElementById('dish-image').value
+            };
+            
+            if (editingDishId) {
+                // Update existing dish
+                for (const category in dishesData) {
+                    const index = dishesData[category].findIndex(d => d.id === editingDishId);
+                    if (index !== -1) {
+                        // If category changed, remove from old category and add to new one
+                        if (category !== dishData.category) {
+                            dishesData[category].splice(index, 1);
+                            dishData.id = editingDishId;
+                            dishesData[dishData.category].push(dishData);
+                        } else {
+                            // Update in same category
+                            dishesData[category][index] = { ...dishesData[category][index], ...dishData };
+                        }
+                        break;
+                    }
+                }
+            } else {
+                // Add new dish
+                const newId = Math.max(...Object.values(dishesData).flat().map(d => d.id)) + 1;
+                dishData.id = newId;
+                dishesData[dishData.category].push(dishData);
+            }
+            
+            // Close modal and reload dishes
+            document.getElementById('dish-modal').classList.add('hidden');
+            loadDishes(currentCategory);
+        });
+    </script>
+</body>
+</html>
